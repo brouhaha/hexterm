@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import argparse
 import platform
 import Queue
 import serial
@@ -10,13 +11,23 @@ import time
 if platform.system() == 'Windows':
     import serial.tools.list_ports
     #print list(serial.tools.list_ports.comports())
-    port = "COM37"
+    default_port = "COM37"
 else:
     # Linux:
-    port = '/dev/ttyUSB0'
+    default_port = '/dev/ttyUSB0'
 
+default_rate = 115200
 
-baudrate = 115200
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--port", type=str, help="serial port", default = default_port)
+parser.add_argument("-r", "--rate", type=int, help="serial bits/s", default = default_rate)
+
+args = parser.parse_args()
+
+port = args.port
+rate = args.rate
+
+print "port = ", port, ", rate = ", rate
 
 def hex_dump(data):
     for i in range(0, len(data), 16):
@@ -37,7 +48,7 @@ def hex_dump(data):
         print s
 
 ser = serial.Serial(port,
-                    baudrate,
+                    rate,
                     bytesize=8, parity='N', stopbits=1,
                     xonxoff=0, rtscts=0,
                     timeout=0.1)
