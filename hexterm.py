@@ -28,7 +28,7 @@ import time
 if platform.system() == 'Windows':
     import serial.tools.list_ports
     #print list(serial.tools.list_ports.comports())
-    default_port = "COM37"
+    default_port = "COM1"
 else:
     # Linux:
     default_port = '/dev/ttyUSB0'
@@ -36,8 +36,8 @@ else:
 default_rate = 115200
 
 parser = argparse.ArgumentParser(epilog = copyright_msg)
-parser.add_argument("-p", "--port", type=str, help="serial port", default = default_port)
-parser.add_argument("-r", "--rate", type=int, help="serial bits/s", default = default_rate)
+parser.add_argument("-p", "--port", type=str, help="serial port (default: %(default)s)", default = default_port)
+parser.add_argument("-r", "--rate", type=int, help="serial bits/s (default: %(default)s)", default = default_rate)
 parser.add_argument("-q", "--quiet", help="suppress sign-on message", action="store_true")
 
 args = parser.parse_args()
