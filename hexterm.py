@@ -1,4 +1,21 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# hexterm.py - serial terminal program with hexadecimal input from
+# keyboard and hexadecimal dump w/ ASCII output.
+copyright_msg = 'hexterm Copyright © 2014 Eric Smith <spacewar@gmail.com>'
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 3 as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
 import platform
@@ -18,16 +35,15 @@ else:
 
 default_rate = 115200
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(epilog = copyright_msg)
 parser.add_argument("-p", "--port", type=str, help="serial port", default = default_port)
 parser.add_argument("-r", "--rate", type=int, help="serial bits/s", default = default_rate)
+parser.add_argument("-q", "--quiet", help="suppress sign-on message", action="store_true")
 
 args = parser.parse_args()
 
 port = args.port
 rate = args.rate
-
-print "port = ", port, ", rate = ", rate
 
 def hex_dump(data):
     for i in range(0, len(data), 16):
@@ -58,6 +74,13 @@ def rx_thread():
         data = ser.read(64)
         if len(data) > 0:
             hex_dump(data)
+
+
+if not args.quiet:
+    print copyright_msg
+    print "use --help command line option for help and license information"
+    print "port = %s, rate = %d" % (port, rate)
+    print
 
 rx_queue = Queue.Queue()
 rx_thread = thread.start_new_thread(rx_thread, ())
